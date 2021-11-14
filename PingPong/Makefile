@@ -10,14 +10,14 @@ exe_B: B_pingpong
 ifndef BYTES
 	@echo "BYTES is not defined"
 else
-	mpirun ${MPIFLAGS} $< $(BYTES)
+	mpirun ${MPIFLAGS} ./$< $(BYTES)
 endif
 
 exe_NB: NB_pingpong
 ifndef BYTES
 	@echo "BYTES is not defined"
 else
-	mpirun ${MPIFLAGS} $< $(BYTES)
+	mpirun ${MPIFLAGS} ./$< $(BYTES)
 endif
 
 NB_pingpong: NB_pingpong.c
