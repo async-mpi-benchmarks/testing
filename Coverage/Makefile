@@ -4,9 +4,12 @@ MPIFLAGS = -np 2
 
 .PHONY: clean run
 
-compil: covering
+compil: main bench
 
-run: covering
+run_bench: bench
+	mpirun ${MPIFLAGS} ./$<
+
+run: main
 ifndef BYTES
 	@echo "BYTES is not defined"
 else ifndef NBOP
@@ -15,7 +18,10 @@ else
 	mpirun ${MPIFLAGS} ./$< $(BYTES) $(NBOP)
 endif
 
-covering: covering.c
+bench: bench.c covering.o
+	${CC} ${CFLAGS} $^ -o $@
+
+main: main.c covering.o
 	${CC} ${CFLAGS} $^ -o $@
 
 clean:
