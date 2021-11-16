@@ -1,3 +1,6 @@
+# Directories to ignore
+lib/
+
 # Prerequisites
 *.d
 
