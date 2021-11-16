@@ -30,7 +30,7 @@ MEASUREMENT coverage(int rank, int size, uint64_t NB_BYTES, uint64_t NB_OPERATIO
         		"xor %%rax, %%rax;\n"
         		
         		"loop:;\n"
-        			"inc %%rax;\n"
+        			"add $1,%%rax;\n"
         			"cmp %[_b], %%rax;\n"
         			"jne loop;\n"
         		:
