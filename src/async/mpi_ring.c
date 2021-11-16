@@ -41,7 +41,7 @@ int main()
 
         // Whichever process you are, send the loop counter
         MPI_Isend(&looping_count, 1, MPI_INT, (world_rank + 1) % world_size, 0,
-                 MPI_COMM_WORLD, &req);
+                  MPI_COMM_WORLD, &req);
 
         // Do some heavy computation here
         sleep(2);
@@ -52,7 +52,7 @@ int main()
         // process in the world
         if (world_rank == 0) {
             MPI_Irecv(&looping_count, 1, MPI_INT, world_size - 1, 0,
-                     MPI_COMM_WORLD, &req);
+                      MPI_COMM_WORLD, &req);
 
             // Do some heavy computation here
             sleep(1);
