@@ -4,9 +4,9 @@ OFLAFS = -march=native -mtune=native -O1
 
 build: sync async
 
-sync: sync_p2p sync_ping_pong sync_ring
+sync: sync/p2p sync/ping_pong sync/ring
 
-async: async_p2p async_ping_pong async_ring
+async: async/p2p async/ping_pong async/ring
 
 hello_world: src/mpi_hello_world.c
 	@mkdir -p target/
