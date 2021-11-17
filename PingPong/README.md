@@ -1,23 +1,29 @@
 #Benchmark test for PingPong
 
 ##Usage:
+	
 	compilation:
 	```bash
 		make compil
 	```
-	 Exec blocking version:
+	
+	Exec blocking version:
 	 ```bash
 	 	make exe_B BYTES=[NB Bytes]
 	 ```
-	 Exec non-blovking version:
+	
+	Exec non-blovking version:
 	 ```bash
 	 	make exe_NB BYTES=[NB Bytes]
 	 ```
-	 Launch the benchmark:
+	
+	Launch the benchmark:
 	 ```bash
 	 	./bench.sh
 	 ```
-	 Plot the result of the benchmark:
+	
+	Plot the result of the benchmark:
 	 ```bash
 	 	gnuplot plot.gnu
 	 ```
+	 
