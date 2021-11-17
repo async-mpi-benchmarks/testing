@@ -1,6 +1,6 @@
-#Benchmark test for PingPong
+# Benchmark test for PingPong
 
-##Usage:
+## Usage:
 	
 	compilation:
 	```bash
