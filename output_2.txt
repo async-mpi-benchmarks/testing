@@ -1,0 +1,42 @@
+init rank : 8
+init rank : 9
+init rank : 2
+rank : 2, debut : 11, fin : 20
+init rank : 6
+init rank : 10
+i : 0
+i : 1
+i : 2
+i : 3
+i : 4
+i : 5
+i : 6
+i : 7
+i : 8
+i : 9
+init rank : 1
+rank : 1, debut : 1, fin : 10
+init rank : 3
+rank : 3, debut : 21, fin : 30
+init rank : 5
+rank : 5, debut : 41, fin : 50
+init rank : 7
+rank : 7, debut : 61, fin : 70
+rank : 10, debut : 91, fin : 100
+recieve from 0 : 3628800
+recieve from 1 : 670442572800
+recieve from 2 : 109027350432000
+recieve from 3 : 3075990524006400
+recieve from 4 : 37276043023296000
+recieve from 5 : 273589847231500800
+recieve from 6 : 1439561377475020800
+recieve from 7 : 5974790569203456000
+recieve from 8 : 2312334251020054784
+recieve from 9 : 7475418734400817152
+rank : 9, debut : 81, fin : 90
+init rank : 4
+rank : 4, debut : 31, fin : 40
+rank : 8, debut : 71, fin : 80
+rank : 6, debut : 51, fin : 60
+ result : 1237125786146705977742292979121229734035014624417260896619398927520253616750918366827857945532037091120527342901258007158362992035695165440000000000000000000
+ verification result : 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000

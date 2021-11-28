@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
+#include <gmp.h>
 
 int main(int argc , char** argv){
 
@@ -14,11 +15,21 @@ int main(int argc , char** argv){
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	
-	int width = 2 ; 
-	unsigned long long result, tmp, sresult, debut, sdebut, fin , sfin; 
+	int width = 10 ; 
+	unsigned long long tmp, sresult, debut, sdebut, fin , sfin; 
+	
+	mpz_t result ; 
+	mpz_init (result) ; 
+	mpz_set_ui(result,1);
+
+	mpz_t mpz_tmp ; 
+	mpz_init (mpz_tmp) ; 
+	mpz_set_ui(mpz_tmp,1);
+
+	
 	// main mpi process ;
 	if (rank == 0){
-		result = 1 ; 
+		//result = 1 ; 
 		debut = 0 ; 
 		fin = 0 ; 
 		tmp = 0 ; 
@@ -37,20 +48,24 @@ int main(int argc , char** argv){
 		{
 
 			MPI_Recv(&tmp, 1, MPI_UNSIGNED_LONG_LONG, i+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			printf("recieve from %i : %lli\n", i,  tmp);			
-			result= result * tmp ; 
-			printf(" result : %lli\n", result ) ;			
+			printf("recieve from %i : %lli\n", i,  tmp);	
+			mpz_set_ui(mpz_tmp,tmp);		
+			mpz_mul(result, result, mpz_tmp);
+			//printf(" result : %lli\n", result ) ;			
 		}
-		printf(" result : %lli\n", result ) ;		
+		//printf(" result : %lli\n", result ) ;	
+		gmp_printf(" result : %Zd\n", result )	;
 		
 		// verfication
-		tmp = 1 ; 
+		mpz_set_ui(mpz_tmp,1);
 		for (int i = 1 ; i <= fin; ++i){
-			tmp *= i ; 
+			mpz_mul_ui(mpz_tmp, mpz_tmp, i);
 		}
-		printf(" verification result : %lli\n", tmp ) ;				
+		gmp_printf(" verification result : %Zd\n", mpz_tmp )	;			
 	}
 	
+	
+	// compute p
 	else if (rank < 11)
 	{
 		printf("init rank : %i\n", rank);
