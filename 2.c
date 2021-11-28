@@ -15,9 +15,16 @@ int main(int argc , char** argv){
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	
-	int width = 10 ; 
-	unsigned long long tmp, sresult, debut, sdebut, fin , sfin; 
+	int width = 100 ; 
+	unsigned long long tmp, debut, sdebut, fin , sfin; 
+	unsigned long sword[20];
+	unsigned long word[20];
 	
+	for (int i = 0 ; i < 20 ; ++i){
+		word[i] = 0 ;
+		sword[i] = 0 ; 
+	}
+		
 	mpz_t result ; 
 	mpz_init (result) ; 
 	mpz_set_ui(result,1);
@@ -26,6 +33,12 @@ int main(int argc , char** argv){
 	mpz_init (mpz_tmp) ; 
 	mpz_set_ui(mpz_tmp,1);
 
+
+	mpz_t sresult ; 
+	mpz_init (sresult) ; 
+	mpz_set_ui(sresult,1);
+	
+ 
 	
 	// main mpi process ;
 	if (rank == 0){
@@ -46,11 +59,16 @@ int main(int argc , char** argv){
 		// recieve the result 
 		for (int i = 0 ; i < 10 ; ++i)
 		{
-
-			MPI_Recv(&tmp, 1, MPI_UNSIGNED_LONG_LONG, i+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			printf("recieve from %i : %lli\n", i,  tmp);	
-			mpz_set_ui(mpz_tmp,tmp);		
+			for (int i = 0 ; i < 20 ; ++i){
+				word[i] = 0 ; 
+			}
+			MPI_Recv(&word, 20, MPI_UNSIGNED_LONG, i+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			printf("recieved word : %li %li\n", word[0], word[1] );			
+			mpz_set_ui(mpz_tmp,0);	
+			mpz_import(mpz_tmp, 20, -1, sizeof(sword[0]), 0, 0, word);		
+		
 			mpz_mul(result, result, mpz_tmp);
+			gmp_printf(" recieve  : %Zd\n", mpz_tmp )	;				
 			//printf(" result : %lli\n", result ) ;			
 		}
 		//printf(" result : %lli\n", result ) ;	
@@ -58,10 +76,11 @@ int main(int argc , char** argv){
 		
 		// verfication
 		mpz_set_ui(mpz_tmp,1);
+		mpz_set_ui(result,1);
 		for (int i = 1 ; i <= fin; ++i){
-			mpz_mul_ui(mpz_tmp, mpz_tmp, i);
+			mpz_mul_ui(result, result, i);
 		}
-		gmp_printf(" verification result : %Zd\n", mpz_tmp )	;			
+		gmp_printf(" verification result : %Zd\n", result )	;			
 	}
 	
 	
@@ -69,16 +88,25 @@ int main(int argc , char** argv){
 	else if (rank < 11)
 	{
 		printf("init rank : %i\n", rank);
-		sresult = 1; 
+		mpz_set_ui(sresult,1); 
 		MPI_Recv(&sdebut, 1, MPI_UNSIGNED_LONG_LONG, 0,0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
 		MPI_Recv(&sfin, 1, MPI_UNSIGNED_LONG_LONG, 0,1, MPI_COMM_WORLD, MPI_STATUS_IGNORE );	
 		printf("rank : %i, debut : %lli, fin : %lli\n", rank, sdebut, sfin);
 		// calculation of the sub factoriel
 		
 		for (int i = sdebut; i <= sfin ; i++){
-			sresult *=i ; 
+			mpz_mul_ui(sresult, sresult, i);
 		}
-		MPI_Send(&sresult, 1, MPI_UNSIGNED_LONG_LONG, 0, 0, MPI_COMM_WORLD);		
+		
+		for (int i = 0 ; i < 20 ; ++i){
+			sword[i] = 0 ; 
+		}
+		gmp_printf(" send result : %Zd\n", sresult )	;
+		mpz_export(sword, NULL, -1, sizeof(sword[0]), 0, 0, sresult);
+		
+		printf("sword : %li %li\n", sword[0] , sword[1]);
+		
+		MPI_Send(&sword, 20, MPI_UNSIGNED_LONG, 0, 0, MPI_COMM_WORLD);		
 		
 		
 				
