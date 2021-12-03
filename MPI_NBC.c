@@ -22,11 +22,13 @@ int main (int argc , char** argv)
     MPI_Request req = MPI_REQUEST_NULL ;
 
      // Opérations non bloquantes
+     int nbl ,nbc =4 ;
+
     if (rank == 0)
     {  
-            int nbl ,nbc =4 ;
+            
 
-            int **tab1= malloc(nbl*sizeof(int));
+            int **tab1= malloc(nbl*sizeof(int*));
 
             for( i = 0 ; i < nbl; i++)
 
@@ -35,7 +37,7 @@ int main (int argc , char** argv)
                 tab1[i] = malloc(nbc*sizeof(int));
 
             }
-          int **tab2= malloc(nbl*sizeof(int));
+          int **tab2= malloc(nbl*sizeof(int*));
 
             for(i = 0; i < nbl; i++)
 
@@ -46,7 +48,14 @@ int main (int argc , char** argv)
             }
 
             // multiplication de deux matrice carré n = 4 
-            int **mul= malloc(nbl*sizeof(int));
+            int **mul= malloc(nbl*sizeof(int*));
+             for( i = 0 ; i < nbl; i++)
+
+            {
+
+                mul[i] = malloc(nbc*sizeof(int));
+
+            }
             mul[i][j]=0;
              for( i = 0; i < nbl; i++)
             {
@@ -61,11 +70,12 @@ int main (int argc , char** argv)
             }
        
         rdtsc_debut = rdtsc();
-        int **tab1;
-        int **tab2;
-        int **mul;
         
-         MPI_Isend (tab1[i] , 4 , MPI_INT , 1 , 000 ,MPI_COMM_WORLD , &req);
+         for(i = 0; i < nbl; i++)
+         {
+             MPI_Isend (mul[i] , nbl , MPI_INT , 1 , 000 ,MPI_COMM_WORLD , &req);
+         }
+         
 
         rdtsc_fin= rdtsc();
         rdtsc_debut = rdtsc_fin - rdtsc_debut ;
@@ -79,24 +89,38 @@ int main (int argc , char** argv)
              }
         MPI_Wait(&req , MPI_STATUS_IGNORE);
         req =MPI_REQUEST_NULL ;
-
+    free(tab1);
+    free(tab2);
     }
 
     if (rank == 1 )
     {
-        int **mul;
-        int **mul= malloc(nbl*sizeof(int));
         
+        int **mul= malloc(nbl*sizeof(int*));
+         for( i = 0 ; i < nbl; i++)
 
-        MPI_Irecv(mul[i][j] , 4, MPI_INT , 0 , 000 ,MPI_COMM_WORLD , &req);
+            {
 
-         for (int i = 0 ; j<nbl ; i++)
+                mul[i] = malloc(nbc*sizeof(int));
+
+            }
+        for(i = 0; i < nbl; i++){
+
+                MPI_Irecv(mul[i], nbl, MPI_INT , 0 , 000 ,MPI_COMM_WORLD , &req);
+
+
+        }
+        MPI_Wait (&req , MPI_STATUS_IGNORE);
+        
+         for (int i = 0 ; i<nbl ; i++)
              {
-                 
-                 printf("rank %d, mul =  %d \n " , rank ,mul[i][j]);
+                 for ( int j=0 ; j<nbc ; j++)
+                 {
+                    printf("rank %d, mul =  %d \n " , rank ,mul[i][j]);
+                 }
+                
              }
-            free(tab1);
-            free(tab2);
+            
             free(mul);
             
 
