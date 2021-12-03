@@ -1,6 +1,8 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 unsigned long long  rdtsc()
 { 
@@ -22,11 +24,12 @@ int main (int argc , char** argv)
     MPI_Request req = MPI_REQUEST_NULL ;
 
      // Opérations non bloquantes
-     int nbl ,nbc =4 ;
+     int nbl=4 ;
+     int nbc =4 ;
 
     if (rank == 0)
     {  
-            
+           srand(time(NULL));
 
             int **tab1= malloc(nbl*sizeof(int*));
 
@@ -35,8 +38,13 @@ int main (int argc , char** argv)
             {
 
                 tab1[i] = malloc(nbc*sizeof(int));
+                for (int j=0 ; j<nbc ; j++)
+                {
+                    tab1[i][j] = rand() %100 ;
+                }
 
             }
+            
           int **tab2= malloc(nbl*sizeof(int*));
 
             for(i = 0; i < nbl; i++)
@@ -44,6 +52,11 @@ int main (int argc , char** argv)
             {
 
                 tab2[i] = malloc(nbc*sizeof(int));
+                 for (int j=0 ; j<nbc ; j++)
+                {
+                    tab2[i][j] = rand() %100;
+                }
+
 
             }
 
@@ -54,9 +67,11 @@ int main (int argc , char** argv)
             {
 
                 mul[i] = malloc(nbc*sizeof(int));
-
+                memset(mul[i],0 ,nbc*sizeof(int)); // Initialiser la matrice mul à 0 
+                
             }
-            mul[i][j]=0;
+            
+           
              for( i = 0; i < nbl; i++)
             {
                  for( j = 0; j < nbc; j++)
@@ -80,11 +95,16 @@ int main (int argc , char** argv)
         rdtsc_fin= rdtsc();
         rdtsc_debut = rdtsc_fin - rdtsc_debut ;
         
-         printf("temp du Isend =  %llu ,  la fin =   %llu " , rdtsc_debut ,  rdtsc_fin ) ;
-      
-             for (int j = 0 ; j<4 ; j++)
+         printf("temp du Isend =\n  %llu ,  la fin =  %llu  \n" , rdtsc_debut ,  rdtsc_fin ) ;
+          
+             for (int i= 0 ; i<nbl ; i++)
              {
-                 printf("rank %d, i =  %d \n " , rank ,mul[i][j]);
+                  
+                 for (int j=0 ; j<nbc ; j++) 
+                 {
+                     printf("rank %d, i =  %d \n " , rank ,mul[i][j]);
+                 }
+                 
                
              }
         MPI_Wait(&req , MPI_STATUS_IGNORE);
