@@ -15,7 +15,7 @@ int main(int argc , char** argv){
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	
-	int width = 100 ; 
+	int width = 3 ; 
 	unsigned long long tmp, debut, sdebut, fin , sfin; 
 	unsigned long sword[20];
 	unsigned long word[20];
@@ -47,7 +47,7 @@ int main(int argc , char** argv){
 		fin = 0 ; 
 		tmp = 0 ; 
 		
-		for (int i = 0 ; i < 10 ; ++i)
+		for (int i = 0 ; i < size -1 ; ++i)
 		{
 			printf("i : %i\n", i);
 			debut = i * width +1; 
@@ -57,7 +57,7 @@ int main(int argc , char** argv){
 		}
 		
 		// recieve the result 
-		for (int i = 0 ; i < 10 ; ++i)
+		for (int i = 0 ; i < size -1 ; ++i)
 		{
 			for (int i = 0 ; i < 20 ; ++i){
 				word[i] = 0 ; 
@@ -85,7 +85,7 @@ int main(int argc , char** argv){
 	
 	
 	// compute p
-	else if (rank < 11)
+	else if (rank < size )
 	{
 		printf("init rank : %i\n", rank);
 		mpz_set_ui(sresult,1); 
