@@ -1,6 +1,18 @@
 // Objective : quantify time and evaluate covering effect on timings
 // between sync and async paradigm through MPI
 
+/*
+Protocol : 
+	- send array from rank 0 to each working process
+	- compute \sum_0^N 1 on each process to enforce computation on the cpu core
+	- send back the sum result 
+	
+	- Array sending and sum computation can overlap because they are
+		 independants.
+	- This is the async example (without overlap between the 2 independant phases)
+	- Hypothesis : his sync implementation is more efficient than the async (1_I)
+*/
+
 
 #include <time.h>
 #include <stdlib.h>
