@@ -20,15 +20,26 @@ int main(int argc, char** argv)
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 	
 	
+	unsigned long long size_array , i_max ;
+
 	if (argc != 3){
-		printf("Please use arguments : [size of array] [number of sums]\n");
-		MPI_Abort(MPI_COMM_WORLD, 0) ; 
+		size_array = 100000;
+		i_max = 200000 ;	
 	}	
+	else{
+		char *tmpstring ; 	
+		size_array = strtoul(argv[1], &tmpstring, BASE) ;//100000
+		i_max = strtoul(argv[2], &tmpstring, BASE) ;	 //200000	
+	}
 	
-	char *tmpstring ; 	
-	unsigned long long size_array = strtoul(argv[1], &tmpstring, BASE) ;//100000
-	unsigned long long i_max = strtoul(argv[2], &tmpstring, BASE) ;	 //200000	
-	
+	if (world_rank == 0){
+		if (argc != 3){
+
+			printf("size of array : %llu \n", size_array) ;
+			printf("number iterations of sum : %llu \n", i_max) ;
+			printf("Please use arguments : [size of array] [number of sums]\n");		
+		}		
+	}	
 
 	double * array = malloc( size_array * sizeof(double)) ; 
 	double a = 0.0 ; 
@@ -49,16 +60,20 @@ int main(int argc, char** argv)
 			MPI_Send(array, size_array, MPI_DOUBLE, i, i, MPI_COMM_WORLD);
 		}
 
+		// time spend in Send execution    	
+		clock_gettime( CLOCK_MONOTONIC, &end ) ; 
+		printf("%ld spend sharing array\n" , (end.tv_nsec - start.tv_nsec)) ;
+		
 		for (int i = 1 ; i < world_size ; i++){
 			MPI_Recv(array+i, 1, MPI_DOUBLE, i, i, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 	
 
-		printf("value computed : %f \n" , array[1]) ;	
+		//printf("value computed : %f \n" , array[1]) ;	
 	
 		// time spend in Send execution    	
 		clock_gettime( CLOCK_MONOTONIC, &end ) ; 
-		printf("Spend %ld in MPI_Send\n" , (end.tv_nsec - start.tv_nsec)) ;
+		printf("%ld spend sharing array & compute\n" , (end.tv_nsec - start.tv_nsec)) ;
 	    	
 	} else if (world_rank < world_size ) {
 		MPI_Recv(array, size_array, MPI_DOUBLE, 0, world_rank, MPI_COMM_WORLD,
