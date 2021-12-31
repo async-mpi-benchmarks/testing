@@ -6,22 +6,33 @@
 #include <stdio.h>
 #include <mpi.h>
 
+#define BASE 10 
+
 int main(int argc, char** argv)
 {
+
+
+
 	MPI_Init(&argc,&argv);
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	int world_size;
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 	
-	unsigned long long size_array = 1000000 ; //1000000
-	double * array = malloc( size_array * sizeof(double)) ; 
+	
+	if (argc != 3){
+		printf("Please use arguments : [size of array] [number of sums]\n");
+		MPI_Abort(MPI_COMM_WORLD, 0) ; 
+	}	
+	
+	char *tmpstring ; 	
+	unsigned long long size_array = strtoul(argv[1], &tmpstring, BASE) ;//100000
+	unsigned long long i_max = strtoul(argv[2], &tmpstring, BASE) ;	 //200000	
 	
 
-	
+	double * array = malloc( size_array * sizeof(double)) ; 
 	double a = 0.0 ; 
-	unsigned long long i_max =  2000000 ;	
-	
+
 	if (world_rank == 0) {
 		printf("The number of processes is %d\n" , world_size) ;
 		
