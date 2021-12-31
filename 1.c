@@ -1,5 +1,5 @@
-//this code is from internet 
-// objecftive : discover mpi
+// Objective : quantify time and evaluate covering effect on timings
+// between sync and async paradigm through MPI
 
 #include <time.h>
 #include <stdlib.h>
