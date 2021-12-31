@@ -50,8 +50,17 @@ int main(int argc, char** argv)
 			printf("size of array : %llu \n", size_array) ;
 			printf("number iterations of sum : %llu \n", i_max) ;
 			printf("Please use arguments : [size of array] [number of sums]\n");		
+		}	
+		
+		if (size_array < world_size){
+			printf("Please use size of array >= %d\n", world_size);
 		}		
+			
 	}	
+
+	if (size_array < world_size){
+		size_array = world_size + 1 ;
+	}
 
 	double * array = malloc( size_array * sizeof(double)) ; 
 	double a = 0.0 ; 
