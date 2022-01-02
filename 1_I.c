@@ -21,6 +21,31 @@ Protocol :
 
 #define BASE 10 
 
+inline
+unsigned long long sync_rdtscp()
+{
+    unsigned long long lo, hi;
+
+    __asm__ volatile(
+        "rdtscp;\n"
+        "cpuid;\n"
+        : "=r" (lo), "=r" (hi)
+        :
+        : "rax", "rbx", "rcx", "rdx");
+
+    return ((hi << 32) | lo);
+}
+
+inline
+unsigned long long rdtsc(void)
+{
+  unsigned long long a, d;
+  
+  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
+  
+  return (d << 32) | a;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -77,8 +102,7 @@ int main(int argc, char** argv)
 		}		
 		
 		// timer	
-		struct timespec start , end ; 
-		clock_gettime( CLOCK_MONOTONIC, &start ) ; 		
+		double start = (double)rdtsc();	
 			
 		for (int i = 1 ; i < world_size ; i++){
 		    	MPI_Isend(array, size_array, MPI_DOUBLE, i, i, MPI_COMM_WORLD, &special_request);
@@ -88,8 +112,8 @@ int main(int argc, char** argv)
 			MPI_Wait(&special_request , &special_status);
 		}
 	
-		clock_gettime( CLOCK_MONOTONIC, &end ) ; 
-		printf("%ld spend sharing array\n" , (end.tv_nsec - start.tv_nsec)) ;
+		double end = (double)rdtsc();
+		printf("%f spend sharing array\n" , (end - start)) ;
 	
 		for (int i = 1 ; i < world_size ; i++){
 		    	MPI_Irecv(array+i, 1, MPI_DOUBLE, i, i, MPI_COMM_WORLD , &special_request);
@@ -102,8 +126,8 @@ int main(int argc, char** argv)
 		//printf("value computed : %f \n" , array[1]) ;
 						    
 		// time spend in Send execution  	    	
-		clock_gettime( CLOCK_MONOTONIC, &end ) ; 
-		printf("%ld spend sharing array & compute\n" , (end.tv_nsec - start.tv_nsec)) ;	    	
+		end = (double)rdtsc();
+		printf("%f spend sharing array & compute\n" , (end - start)) ;	    	
 	    	
 	} else if (world_rank < world_size ) {	
 		MPI_Irecv(array, size_array, MPI_DOUBLE, 0, world_rank, MPI_COMM_WORLD,
