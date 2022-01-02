@@ -22,24 +22,21 @@ Protocol :
 
 
 
-unsigned long long sync_rdtscp()
+inline
+unsigned long long sync_rdtscp(void)
 {
-    unsigned long long lo, hi;
-
-    __asm__ volatile(
-        "rdtscp;\n"
-        "cpuid;\n"
-        : "=r" (lo), "=r" (hi)
-        :
-        : "rax", "rbx", "rcx", "rdx");
-
-    return ((hi << 32) | lo);
+  unsigned long long a, d;
+  __asm__ volatile ("cpuid");  
+  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
+  
+  return (d << 32) | a;
 }
 
+inline
 unsigned long long rdtsc(void)
 {
   unsigned long long a, d;
-  
+ 
   __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
   
   return (d << 32) | a;
@@ -105,7 +102,7 @@ int main(int argc, char** argv)
 
 		// time spend in Send execution    	
 		unsigned long long end = rdtsc(); 
-		printf("%llu spend sharing array\n" , (end - start)) ;
+
 		
 		for (int i = 1 ; i < world_size ; i++){
 			MPI_Recv(array+i, 1, MPI_DOUBLE, i, i, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -115,8 +112,9 @@ int main(int argc, char** argv)
 		//printf("value computed : %f \n" , array[1]) ;	
 	
 		// time spend in Send execution    	
-		end = rdtsc();
-		printf("%llu spend sharing array & compute\n" , (end - start)) ;
+		unsigned long long end2 = rdtsc();
+		printf("%llu spend sharing array\n" , (end - start)) ;		
+		printf("%llu spend sharing array & compute\n" , (end2 - start)) ;
 	    	
 	} else if (world_rank < world_size ) {
 		MPI_Recv(array, size_array, MPI_DOUBLE, 0, world_rank, MPI_COMM_WORLD,
