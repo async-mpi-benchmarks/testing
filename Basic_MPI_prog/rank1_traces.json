@@ -1,0 +1,66 @@
+[
+  {
+    "Init": {
+      "cycles": 11786193234384,
+      "time": 1641550351.081042
+    }
+  },
+  {
+    "Irecv": {
+      "cycles_lo": 11786274556600,
+      "cycles_hi": 11786274568556,
+      "bytes": 800,
+      "comm": 0,
+      "req": 0,
+      "current_rank": 1,
+      "partner_rank": 0,
+      "tag": 123
+    }
+  },
+  {
+    "Wait": {
+      "cycles_lo": 11786274578238,
+      "cycles_hi": 11786274604714,
+      "req": 2,
+      "current_rank": 1
+    }
+  },
+  {
+    "Isend": {
+      "cycles_lo": 11786274607158,
+      "cycles_hi": 11786274611290,
+      "bytes": 800,
+      "comm": 0,
+      "req": 0,
+      "current_rank": 1,
+      "partner_rank": 0,
+      "tag": 456
+    }
+  },
+  {
+    "Wait": {
+      "cycles_lo": 11786275162708,
+      "cycles_hi": 11786275164314,
+      "req": 2,
+      "current_rank": 1
+    }
+  },
+  {
+    "Send": {
+      "cycles_lo": 11786275174714,
+      "cycles_hi": 11786275179624,
+      "bytes": 800,
+      "comm": 0,
+      "current_rank": 1,
+      "partner_rank": 0,
+      "tag": 789
+    }
+  },
+  {
+    "Finalize": {
+      "cycles": 11786384506426,
+      "time": 1641550351.160739,
+      "current_rank": 1
+    }
+  }
+]
