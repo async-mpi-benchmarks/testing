@@ -25,6 +25,7 @@ int main(int argc, char **argv)
     int rank, P;
 
     MPI_Init(&argc, &argv);
+    
     MPI_Request req ; 
 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
