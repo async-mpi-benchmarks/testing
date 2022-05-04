@@ -62,8 +62,8 @@ int main(int argc, char **argv)
 	}
 
 	MPI_Igather(proc, P, MPI_DOUBLE,
-       matrice_trans,P, MPI_DOUBLE,
-       0, MPI_COMM_WORLD,&req);
+       			matrice_trans,P, MPI_DOUBLE,
+       			0, MPI_COMM_WORLD,&req);
 	MPI_Wait(&req,MPI_STATUS_IGNORE);
 
 	/* l'affichage de la matrice transposé */
@@ -80,8 +80,6 @@ int main(int argc, char **argv)
 	 printf("];\n");
 
 	}
-    
-
 
     free(data);
     free(proc);
