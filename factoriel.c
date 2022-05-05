@@ -23,6 +23,7 @@ int main(int argc, char *argv[]){
     }
 
     MPI_Ibcast(&n,1,MPI_INT,0,MPI_COMM_WORLD,&req1);
+    MPI_Ibarrier(MPI_COMM_WORLD,&req1);
     MPI_Wait(&req1,MPI_STATUS_IGNORE);
 
     // Calculate the bounds for each process to define their local areas.
@@ -39,11 +40,12 @@ int main(int argc, char *argv[]){
     }
     //Multiplication of all local results 
     MPI_Ireduce(&res_loc,&res,1,MPI_DOUBLE,MPI_PROD,0,MPI_COMM_WORLD,&req2);
+    MPI_Ibarrier(MPI_COMM_WORLD,&req1);
     MPI_Wait(&req2,MPI_STATUS_IGNORE);
     
     // Process with rank 0 prints the result 
     if(rank==0){
-        printf("The factorial of %d is %lf \n",fact,res );
+        printf("The factorial of %d is %lf \n",n,res );
     }
     MPI_Finalize();
     return 0;
